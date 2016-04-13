@@ -46,10 +46,11 @@ module MeetUpcoming
               geo [e['venue']['lat'], e['venue']['lon']].compact.join(';')
             end
           end
-          dtstamp Time.at(e['updated'] / 1000).to_datetime
-          dtstart Time.at(e['time'] / 1000).to_datetime
+          utc = e['utc_offset']
+          dtstamp ical.datetime(e['updated'] - utc)
+          dtstart ical.datetime(e['time'] - utc)
           if e['duration']
-            dtend Time.at((e['time'] + e['duration']) / 1000).to_datetime
+            dtend ical.datetime(e['time'] + e['duration'] - utc)
           end
         end
       end
@@ -59,6 +60,10 @@ module MeetUpcoming
 
     def address(v)
       return "#{v['name']}; #{v['address_1']}; #{v['city']}, #{v['state']} #{v['zip']} #{v['localized_country_name']}"
+    end
+
+    def datetime(n)
+      Time.at(n / 1000).to_datetime.strftime('%Y%m%dT%H%M%SZ')
     end
   end
 end

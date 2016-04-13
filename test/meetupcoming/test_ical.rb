@@ -32,10 +32,10 @@ class IcalTest < Minitest::Test
   end
 
   def test_start
-    assert_match '20160413T180000', @subject
+    assert_match '20160413T230000', @subject
   end
 
   def test_end
-    assert_match '20160413T210000', @subject
+    assert_match '20160414T020000', @subject
   end
 end
