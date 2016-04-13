@@ -52,7 +52,7 @@ module MeetUpcoming
     end
 
     def logged_in?
-      !!session[:id]
+      session[:id] && meetup.auth(session[:id])
     end
   end
 end

@@ -12,9 +12,12 @@
   <% if logged_in? %>
     <h2>Your calendar URL</h2>
     <p><a href="<%= upcoming_url %>"><%= upcoming_url %></a></p>
+
+    <p>Calendar data may be cached for 24 hours. Authentication information will be cached for up to two weeks; if you don't access your calendar for a while you may need to reauthenticate, which will generate a new URL.</p>
+    <hr/>
   <% end %>
 
-  <p><a href="<%= auth_url %>">Authenticate</a></p>
+  <p><a href="<%= auth_url %>">Log in with Meetup</a></p>
 
   <a href="https://github.com/justinlove/meetupcoming"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
 </body>
