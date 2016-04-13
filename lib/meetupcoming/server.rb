@@ -48,7 +48,7 @@ module MeetUpcoming
     end
 
     def upcoming_url
-      "#{ENV['HOSTNAME']}/upcoming/#{session[:id]}.ics"
+      "#{ENV['HOSTNAME'].sub(/https?/, 'webcal')}/upcoming/#{session[:id]}.ics"
     end
 
     def logged_in?
