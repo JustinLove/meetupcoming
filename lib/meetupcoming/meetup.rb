@@ -29,7 +29,9 @@ module MeetUpcoming
     end
 
     def calendar
-      token.get('/self/calendar').body
+      cache(token.token+'cal') do
+        token.get('/self/calendar').body
+      end
     end
 
     def auth(id)
@@ -38,6 +40,17 @@ module MeetUpcoming
       redis.expire id, (60*60*24*14)
       deserialize(token)
       return true
+    end
+
+    def cache(key)
+      return yield unless redis
+
+      cached = redis.get key
+      return cached if cached
+
+      response = yield
+      redis.setex key, (60*60*24), response
+      response
     end
 
     def redis
