@@ -1,7 +1,5 @@
 require 'sinatra/base'
 require 'tilt/erb'
-require 'securerandom'
-require 'redis'
 require 'meetupcoming'
 require 'meetupcoming/meetup'
 
@@ -19,21 +17,19 @@ module MeetUpcoming
     end
 
     get '/oauth2/callback' do
-      meetup.auth_response(params['code'])
-      session[:id] = SecureRandom.urlsafe_base64
-      redis.setex session[:id], (60*60*24*14), meetup.serialize
+      session[:id] = meetup.auth_response(params['code'])
       redirect to('/')
     end
 
     get '/upcoming/:id.ics' do |id|
-      pass unless auth(id)
+      pass unless meetup.auth(id)
 
       content_type :ics
       cal = meetup.calendar
     end
 
     get '/upcoming/:id.json' do |id|
-      pass unless auth(id)
+      pass unless meetup.auth(id)
 
       content_type :json
       cal = meetup.calendar
@@ -56,20 +52,6 @@ module MeetUpcoming
 
     def logged_in?
       !!session[:id]
-    end
-
-    def auth(id)
-      token = redis.get id
-      return false unless token
-      meetup.deserialize(token)
-      return true
-    end
-
-    def redis
-      url = ENV['REDIS_URL'] || ENV['REDISTOGO_URL']
-      if url
-        @redis ||= Redis.new(:url => url)
-      end
     end
   end
 end
