@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'tilt/erb'
 require 'meetupcoming'
 require 'meetupcoming/meetup'
+require 'meetupcoming/ical'
 
 module MeetUpcoming
   class Server < Sinatra::Base
@@ -25,14 +26,14 @@ module MeetUpcoming
       pass unless meetup.auth(id)
 
       content_type :ics
-      cal = meetup.calendar
+      Ical.new(JSON.parse(meetup.calendar)).to_s
     end
 
     get '/upcoming/:id.json' do |id|
       pass unless meetup.auth(id)
 
       content_type :json
-      cal = meetup.calendar
+      meetup.calendar
     end
 
     def meetup
