@@ -47,10 +47,10 @@ module MeetUpcoming
             end
           end
           utc = e['utc_offset']
-          dtstamp ical.datetime(e['updated'] - utc)
-          dtstart ical.datetime(e['time'] - utc)
+          dtstamp ical.datetime(e['updated']), 'TZID' => 'America/Chicago'
+          dtstart ical.datetime(e['time']), 'TZID' => 'America/Chicago'
           if e['duration']
-            dtend ical.datetime(e['time'] + e['duration'] - utc)
+            dtend ical.datetime(e['time'] + e['duration']), 'TZID' => 'America/Chicago'
           end
         end
       end
@@ -63,7 +63,7 @@ module MeetUpcoming
     end
 
     def datetime(n)
-      Time.at(n / 1000).to_datetime.strftime('%Y%m%dT%H%M%SZ')
+      Time.at(n / 1000).to_datetime.strftime('%Y%m%dT%H%M%S')
     end
   end
 end
