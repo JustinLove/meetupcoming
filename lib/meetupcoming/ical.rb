@@ -56,11 +56,10 @@ module MeetUpcoming
               geo [e['venue']['lat'], e['venue']['lon']].compact.join(';')
             end
           end
-          utc = e['utc_offset']
-          dtstamp ical.datetime(e['updated'] - utc)
-          dtstart ical.datetime(e['time'] - utc)
+          dtstamp ical.datetime(e['updated'])
+          dtstart ical.datetime(e['time'])
           if e['duration']
-            dtend ical.datetime(e['time'] + e['duration'] - utc)
+            dtend ical.datetime(e['time'] + e['duration'])
           end
         end
       end
@@ -73,7 +72,7 @@ module MeetUpcoming
     end
 
     def datetime(n)
-      Time.at(n / 1000).to_datetime
+      Time.at(n / 1000).utc.to_datetime
     end
   end
 end
