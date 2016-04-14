@@ -20,6 +20,16 @@ module Icalendar2
       value :types => [:text]
     end
   end
+
+  class DateTimeValue
+    def initialize(value)
+      if value.is_a?(DateTime)
+        super(value.strftime('%Y%m%dT%H%M%SZ'))
+      else
+        super(value)
+      end
+    end
+  end
 end
 
 module MeetUpcoming
@@ -47,10 +57,10 @@ module MeetUpcoming
             end
           end
           utc = e['utc_offset']
-          dtstamp ical.datetime(e['updated']), 'TZID' => 'America/Chicago'
-          dtstart ical.datetime(e['time']), 'TZID' => 'America/Chicago'
+          dtstamp ical.datetime(e['updated'] - utc)
+          dtstart ical.datetime(e['time'] - utc)
           if e['duration']
-            dtend ical.datetime(e['time'] + e['duration']), 'TZID' => 'America/Chicago'
+            dtend ical.datetime(e['time'] + e['duration'] - utc)
           end
         end
       end
@@ -63,7 +73,7 @@ module MeetUpcoming
     end
 
     def datetime(n)
-      Time.at(n / 1000).to_datetime.strftime('%Y%m%dT%H%M%S')
+      Time.at(n / 1000).to_datetime
     end
   end
 end
