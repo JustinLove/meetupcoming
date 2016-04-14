@@ -52,7 +52,7 @@ module MeetUpcoming
           url e['link']
           if e['venue']
             location ical.address(e['venue'])
-            if e['venue']['lat']
+            if e['venue']['lat'] && e['venue']['lat'] != 0
               geo [e['venue']['lat'], e['venue']['lon']].compact.join(';')
             end
           end
