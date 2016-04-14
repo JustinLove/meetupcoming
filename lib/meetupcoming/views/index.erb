@@ -1,23 +1,62 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>MeetUpcoming</title>
-</head>
-<body>
-  <h1>MeetUpcoming</h1>
 
-  <p>Create an iCalendar feed for your upcoming events on <a href="http://www.meetup.com/">Meetup.com</a></p>
-
-  <p>This product uses Meetup.com's API but is not endorsed or certified by Meetup.</p>
-
-  <% if logged_in? %>
-    <h2>Your calendar URL</h2>
-    <p><a href="<%= upcoming_url %>"><%= upcoming_url %></a></p>
-
-    <p>Calendar data may be cached for 24 hours. Authentication information will be cached for up to two weeks; if you don't access your calendar for a while you may need to reauthenticate, which will generate a new URL.</p>
-    <hr/>
+  <% if cdn? %>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <% else %>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
   <% end %>
 
-  <p><a href="<%= auth_url %>">Log in with Meetup</a></p>
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <br/>
+  <div class="container">
+    <div class="jumbotron">
+      <% if logged_in? %>
+        <h2>Your calendar URL</h2>
+        <p><a href="<%= upcoming_url %>"><%= upcoming_url %></a></p>
+      <% else %>
+        <h1>MeetUpcoming</h1>
+
+        <p class="lead">Create an iCalendar feed for your upcoming events on <a href="http://www.meetup.com/">Meetup.com</a></p>
+
+        <p><a href="<%= auth_url %>" class="btn btn-primary btn-lg" role="button">Log in with Meetup</a></p>
+      <% end %>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if logged_in? %>
+          <p>Calendar data may be cached for 24 hours. Authentication information will be cached for up to two weeks; if you don't access your calendar for a while you may need to reauthenticate, which will generate a new URL.</p>
+          <p><a href="<%= auth_url %>">Reauthenticate with Meetup</a></p>
+        <% end %>
+      </div>
+      <div class="col-md-6 text-center">
+        <h3>Made By</h3>
+        <p>
+          <a href="http://wondible.com">Justin Love</a><br/>
+          <a href="http://twitter.com/wondible">@wondible</a>
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /.container -->
+
+
+  <footer class="container text-center">
+    <hr/>
+    <p>This product uses Meetup.com's API but is not endorsed or certified by Meetup.</p>
+  </footer>
 
   <a href="https://github.com/justinlove/meetupcoming"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
 </body>

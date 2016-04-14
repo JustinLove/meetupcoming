@@ -54,5 +54,9 @@ module MeetUpcoming
     def logged_in?
       session[:id] && meetup.auth(session[:id])
     end
+
+    def cdn?
+      ENV['CDN'] != 'false'
+    end
   end
 end
