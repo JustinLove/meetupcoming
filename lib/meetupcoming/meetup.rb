@@ -5,6 +5,9 @@ require 'securerandom'
 
 module MeetUpcoming
   class Meetup
+    ResponseCache = 60*60*24
+    AuthCache = 60*60*24*14
+
     def initialize(key, secret, redirect)
       @client = OAuth2::Client.new(key, secret,
         :site => 'https://api.meetup.com',
@@ -23,12 +26,13 @@ module MeetUpcoming
 
     def auth_response(code)
       @token = client.auth_code.get_token(code, :redirect_uri => redirect)
-      id = SecureRandom.urlsafe_base64
-      redis.setex id, (60*60*24*14), serialize
-      return id
+      @id = SecureRandom.urlsafe_base64
+      redis.setex @id, AuthCache, serialize
+      return @id
     end
 
     def calendar
+      check_token
       cache(token.token+'cal') do
         token.get('/self/calendar').body
       end
@@ -37,9 +41,18 @@ module MeetUpcoming
     def auth(id)
       token = redis.get id
       return false unless token
-      redis.expire id, (60*60*24*14)
+      @id = id
+      redis.expire id, AuthCache
       deserialize(token)
       return true
+    end
+
+    def check_token
+      if token.expired?
+        p 'refreshing access token'
+        @token = token.refresh! if token.expired?
+        redis.setex @id, AuthCache, serialize
+      end
     end
 
     def cache(key)
@@ -49,7 +62,7 @@ module MeetUpcoming
       return cached if cached
 
       response = yield
-      redis.setex key, (60*60*24), response
+      redis.setex key, ResponseCache, response
       response
     end
 
